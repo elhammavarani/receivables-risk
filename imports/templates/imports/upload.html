@@ -20,5 +20,21 @@
         <p>File received: {{ uploaded_file.name }}</p>
     {% endif %}
 
+    {% if columns %}
+        <h2>Columns</h2>
+
+        <ul>
+            {% for column in columns %}
+                <li>{{ column }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if preview %}
+        <h2>Preview</h2>
+
+        {{ preview|safe }}
+    {% endif %}
+
 </body>
 </html>
