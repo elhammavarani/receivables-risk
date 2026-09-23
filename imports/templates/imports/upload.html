@@ -4,36 +4,98 @@
     <meta charset="UTF-8">
     <title>Import Receivables</title>
 </head>
+
 <body>
 
     <h1>Import Receivables</h1>
 
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-
-        <input type="file" name="file" accept=".xlsx,.xls,.csv">
-
-        <button type="submit">Upload</button>
-    </form>
-
-    {% if uploaded_file %}
-        <p>File received: {{ uploaded_file.name }}</p>
+    {% if error %}
+        <p>{{ error }}</p>
     {% endif %}
 
+    <!-- Upload file -->
+    <form method="post" enctype="multipart/form-data">
+
+        {% csrf_token %}
+
+        <input
+            type="file"
+            name="file"
+            accept=".xlsx,.xls,.csv"
+            required
+        >
+
+        <button type="submit">
+            Upload
+        </button>
+
+    </form>
+
+
+    {% if uploaded_file %}
+        <p>
+            File received: {{ uploaded_file.name }}
+        </p>
+    {% endif %}
+
+
+    {% if sheet_names %}
+
+        <h2>انتخاب Sheet</h2>
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            <select name="sheet">
+
+                {% for sheet in sheet_names %}
+
+                    <option
+                        value="{{ sheet }}"
+                        {% if sheet == selected_sheet %}
+                            selected
+                        {% endif %}
+                    >
+                        {{ sheet }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+            <button type="submit">
+                نمایش Sheet
+            </button>
+
+        </form>
+
+    {% endif %}
+
+
     {% if columns %}
+
         <h2>Columns</h2>
 
         <ul>
+
             {% for column in columns %}
+
                 <li>{{ column }}</li>
+
             {% endfor %}
+
         </ul>
+
     {% endif %}
 
+
     {% if preview %}
+
         <h2>Preview</h2>
 
         {{ preview|safe }}
+
     {% endif %}
 
 </body>
