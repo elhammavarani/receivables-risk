@@ -22,5 +22,18 @@ class Invoice(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def str(self):
+    def __str__(self):
         return self.invoice_number
+
+
+class Payment(models.Model):
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE)
+
+    amount = models.DecimalField(max_digits=18, decimal_places=2)
+    payment_date = models.DateField()
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.invoice.invoice_number} - {self.amount}"
