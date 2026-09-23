@@ -16,5 +16,9 @@
         <button type="submit">Upload</button>
     </form>
 
+    {% if uploaded_file %}
+        <p>File received: {{ uploaded_file.name }}</p>
+    {% endif %}
+
 </body>
 </html>
