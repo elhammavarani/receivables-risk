@@ -25,6 +25,11 @@ class Invoice(models.Model):
     def __str__(self):
         return self.invoice_number
 
+    @property
+    def remaining_amount(self):
+        return self.amount - self.paid_amount
+    
+
 
 class Payment(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
@@ -37,3 +42,6 @@ class Payment(models.Model):
 
     def __str__(self):
         return f"{self.invoice.invoice_number} - {self.amount}"
+
+
+    

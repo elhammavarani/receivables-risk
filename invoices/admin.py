@@ -11,6 +11,7 @@ class InvoiceAdmin(admin.ModelAdmin):
         "company_name",
         "amount",
         "paid_amount",
+        "remaining_amount_display",
         "invoice_date",
         "due_date",
     )
@@ -22,6 +23,10 @@ class InvoiceAdmin(admin.ModelAdmin):
     @admin.display(description="Company")
     def company_name(self, obj):
         return obj.company.name
+
+    @admin.display(description="Remaining")
+    def remaining_amount_display(self, obj):
+        return obj.remaining_amount
 
 
 @admin.register(Payment)
