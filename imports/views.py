@@ -105,11 +105,35 @@ def upload_file(request):
                 )
 
         if df is not None:
-            columns = df.columns.tolist()
+            required_columns = [
+                "شماره فاکتور",
+                "کد مشتری",
+                "تاریخ فاکتور",
+                "مبلغ فاکتور",
+                "مهلت پرداخت",
+                "مبلغ پرداخت شده",
+                "مانده",
+            ]
 
-            preview = df.head(5).to_html(
-                index=False,
-                classes="preview-table",
+            missing_columns = [
+                column
+                for column in required_columns
+                if column not in df.columns
+            ]
+
+            if missing_columns:
+                return render(
+                    request,
+                    "imports/upload.html",
+                    {
+                    "error": (
+                        "ستون‌های زیر در Sheet پیدا نشدند: "
+                        + "، ".join(missing_columns)
+                    ),
+                    "uploaded_file": uploaded_file,
+                    "sheet_names": sheet_names,
+                    "selected_sheet": selected_sheet,
+                },
             )
 
     return render(
