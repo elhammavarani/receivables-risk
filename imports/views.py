@@ -14,6 +14,7 @@ def upload_file(request):
     sheet_names = []
     selected_sheet = None
     df = None
+    summary = None
 
     if request.method == "POST":
         uploaded_file = request.FILES.get("file")
@@ -223,6 +224,77 @@ def upload_file(request):
                         f"بعضی مقادیر ستون «{column}» نامعتبر هستند."
                     )
 
+            # محاسبه روزهای تأخیر
+
+            today = pd.Timestamp.today().normalize()
+
+            df["روزهای تأخیر"] = (
+                today - df["مهلت پرداخت"]
+            ).dt.days
+
+            df["روزهای تأخیر"] = (
+                df["روزهای تأخیر"]
+                .clip(lower=0)
+            )
+
+
+            # محاسبه مانده واقعی
+
+            df["مانده واقعی"] = (
+                df["مبلغ فاکتور"] - df["مبلغ پرداختشده"]
+            )
+
+
+            # وضعیت سررسید
+
+            df["وضعیت"] = "سررسید نشده"
+
+            df.loc[
+                (df["مانده واقعی"] > 0)
+                & (df["روزهای تأخیر"] > 0),
+                "وضعیت",
+            ] = "معوق"
+
+            df.loc[
+                df["مانده واقعی"] <= 0,
+                "وضعیت",
+            ] = "تسویه شده"
+
+
+            # خلاصه مالی
+
+            total_receivables = df["مانده واقعی"].sum()
+
+            total_overdue = df.loc[
+                df["وضعیت"] == "معوق",
+                "مانده واقعی",
+            ].sum()
+
+            overdue_invoice_count = (
+                df["وضعیت"] == "معوق"
+            ).sum()
+
+            overdue_customer_count = df.loc[
+                df["وضعیت"] == "معوق",
+                "کد مشتری",
+            ].nunique()
+
+            overdue_percentage = 0
+
+            if total_receivables > 0:
+                overdue_percentage = (
+                    total_overdue / total_receivables
+                ) * 100
+
+
+            summary = {
+                "total_receivables": total_receivables,
+                "total_overdue": total_overdue,
+                "overdue_invoice_count": overdue_invoice_count,
+                "overdue_customer_count": overdue_customer_count,
+                "overdue_percentage": overdue_percentage,
+            }
+
             # ستون‌ها و Preview
             columns = df.columns.tolist()
 
@@ -240,5 +312,6 @@ def upload_file(request):
             "preview": preview,
             "sheet_names": sheet_names,
             "selected_sheet": selected_sheet,
+            "summary": summary,
         },
     )

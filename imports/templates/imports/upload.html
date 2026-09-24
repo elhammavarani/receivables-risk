@@ -73,6 +73,30 @@
     {% endif %}
 
 
+    {% if summary %}
+
+        <h2>خلاصه مالی</h2>
+
+        <ul>
+            <li>
+                کل مطالبات:
+                {{ summary.total_receivables }}
+            </li>
+
+            <li>
+                مطالبات معوق:
+                {{ summary.total_overdue }}
+            </li>
+
+            <li>
+                تعداد فاکتورهای معوق:
+                {{ summary.overdue_invoice_count }}
+            </li>
+        </ul>
+
+    {% endif %}
+
+
     {% if columns %}
 
         <h2>Columns</h2>
