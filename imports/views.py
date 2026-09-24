@@ -6,6 +6,8 @@ import pandas as pd
 from django.conf import settings
 from django.shortcuts import render
 
+from risk.risk_engine import calculate_risk
+
 
 def upload_file(request):
     uploaded_file = None
@@ -259,6 +261,29 @@ def upload_file(request):
                 df["مانده واقعی"] <= 0,
                 "وضعیت",
             ] = "تسویه شده"
+
+
+            # محاسبه ریسک برای هر ردیف
+
+            risk_results = df.apply(
+                lambda row: calculate_risk(
+                    row["روزهای تأخیر"],
+                    row["مانده واقعی"],
+                ),
+                axis=1,
+            )
+
+            df["Risk Score"] = risk_results.apply(
+                lambda result: result["score"]
+            )
+
+            df["Risk Level"] = risk_results.apply(
+                lambda result: result["level"]
+            )
+
+            df["Risk Reasons"] = risk_results.apply(
+                lambda result: "، ".join(result["reasons"])
+            )
 
 
             # خلاصه مالی
