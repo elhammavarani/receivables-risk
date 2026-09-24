@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>داشبورد مطالبات</title>
+</head>
+<body>
+
+    <h1>داشبورد مطالبات</h1>
+
+    <hr>
+
+    <h2>خلاصه مالی</h2>
+
+    <ul>
+        <li>
+            کل مطالبات:
+            {{ total_receivables }}
+        </li>
+
+        <li>
+            مطالبات معوق:
+            {{ total_overdue }}
+        </li>
+
+        <li>
+            تعداد فاکتورهای معوق:
+            {{ overdue_invoice_count }}
+        </li>
+    </ul>
+
+</body>
+</html>

@@ -6,10 +6,26 @@ import pandas as pd
 from django.conf import settings
 from django.shortcuts import render
 
+from companies.models import UserProfile
+from customers.models import Customer
+from invoices.models import Invoice
+
 from risk.risk_engine import calculate_risk
 
 
 def upload_file(request):
+
+    profile = None
+    company = None
+
+    if request.user.is_authenticated:
+        profile = UserProfile.objects.select_related("company").filter(
+            user=request.user
+        ).first()
+
+        if profile:
+            company = profile.company
+
     uploaded_file = None
     columns = []
     preview = None
@@ -283,6 +299,36 @@ def upload_file(request):
 
             df["Risk Reasons"] = risk_results.apply(
                 lambda result: "، ".join(result["reasons"])
+            )
+
+
+            # ذخیره مشتری‌ها و فاکتورها
+
+            if company:
+                for _, row in df.iterrows():
+                    customer_code = str(row["کد مشتری"]).strip()
+
+                    customer, _ = Customer.objects.get_or_create(
+                        company=company,
+                        code=customer_code,
+                        defaults={
+                            "name": customer_code,
+                        },
+                    )
+
+
+            invoice_number = str(row["شماره فاکتور"]).strip()
+
+            Invoice.objects.update_or_create(
+                company=company,
+                invoice_number=invoice_number,
+                defaults={
+                    "customer": customer,
+                    "amount": row["مبلغ فاکتور"],
+                    "paid_amount": row["مبلغ پرداختشده"],
+                    "invoice_date": row["تاریخ فاکتور"].date(),
+                    "due_date": row["مهلت پرداخت"].date(),
+                },
             )
 
 
