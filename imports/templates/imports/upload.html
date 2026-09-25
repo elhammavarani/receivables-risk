@@ -1,126 +1,188 @@
-<!DOCTYPE html>
-<html lang="fa">
-<head>
-    <meta charset="UTF-8">
-    <title>Import Receivables</title>
-</head>
+{% extends "base.html" %}
 
-<body>
+{% block title %}
+ورود اطلاعات مطالبات
+{% endblock %}
 
-    <h1>Import Receivables</h1>
+{% block content %}
+
+<div class="import-page">
+
+    <h1>ورود اطلاعات مطالبات</h1>
 
     {% if error %}
-        <p>{{ error }}</p>
+        <div class="alert alert-error">
+            {{ error }}
+        </div>
     {% endif %}
 
+
     <!-- Upload file -->
-    <form method="post" enctype="multipart/form-data">
+    <div class="section">
 
-        {% csrf_token %}
+        <h2>آپلود فایل</h2>
 
-        <input
-            type="file"
-            name="file"
-            accept=".xlsx,.xls,.csv"
-            required
-        >
+        <form method="post" enctype="multipart/form-data">
 
-        <button type="submit">
-            Upload
-        </button>
+            {% csrf_token %}
 
-    </form>
+            <div class="form-group">
+
+                <label for="file">
+                    فایل Excel یا CSV
+                </label>
+
+                <input
+                    id="file"
+                    type="file"
+                    name="file"
+                    accept=".xlsx,.xls,.csv"
+                    required
+                >
+
+            </div>
+
+            <button type="submit">
+                آپلود فایل
+            </button>
+
+        </form>
+
+    </div>
 
 
     {% if uploaded_file %}
-        <p>
-            File received: {{ uploaded_file.name }}
-        </p>
+
+        <div class="section">
+
+            <h2>فایل دریافت شد</h2>
+
+            <p>
+                {{ uploaded_file.name }}
+            </p>
+
+        </div>
+
     {% endif %}
 
 
     {% if sheet_names %}
 
-        <h2>انتخاب Sheet</h2>
+        <div class="section">
 
-        <form method="post">
+            <h2>انتخاب Sheet</h2>
 
-            {% csrf_token %}
+            <form method="post">
 
-            <select name="sheet">
+                {% csrf_token %}
 
-                {% for sheet in sheet_names %}
+                <div class="form-group">
 
-                    <option
-                        value="{{ sheet }}"
-                        {% if sheet == selected_sheet %}
-                            selected
-                        {% endif %}
-                    >
-                        {{ sheet }}
-                    </option>
+                    <label for="sheet">
+                        Sheet موردنظر
+                    </label>
 
-                {% endfor %}
+                    <select id="sheet" name="sheet">
 
-            </select>
+                        {% for sheet in sheet_names %}
 
-            <button type="submit">
-                نمایش Sheet
-            </button>
+                            <option
+                                value="{{ sheet }}"
+                                {% if sheet == selected_sheet %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ sheet }}
+                            </option>
 
-        </form>
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+                <button type="submit">
+                    نمایش Sheet
+                </button>
+
+            </form>
+
+        </div>
 
     {% endif %}
 
 
     {% if summary %}
 
-        <h2>خلاصه مالی</h2>
+        <div class="section">
 
-        <ul>
-            <li>
-                کل مطالبات:
-                {{ summary.total_receivables }}
-            </li>
+            <h2>خلاصه مالی</h2>
 
-            <li>
-                مطالبات معوق:
-                {{ summary.total_overdue }}
-            </li>
+            <div class="summary-list">
 
-            <li>
-                تعداد فاکتورهای معوق:
-                {{ summary.overdue_invoice_count }}
-            </li>
-        </ul>
+                <div class="summary-item">
+                    <span>کل مطالبات</span>
+                    <strong>
+                        {{ summary.total_receivables }}
+                    </strong>
+                </div>
+
+                <div class="summary-item">
+                    <span>مطالبات معوق</span>
+                    <strong>
+                        {{ summary.total_overdue }}
+                    </strong>
+                </div>
+
+                <div class="summary-item">
+                    <span>تعداد فاکتورهای معوق</span>
+                    <strong>
+                        {{ summary.overdue_invoice_count }}
+                    </strong>
+                </div>
+
+            </div>
+
+        </div>
 
     {% endif %}
 
 
     {% if columns %}
 
-        <h2>Columns</h2>
+        <div class="section">
 
-        <ul>
+            <h2>ستون‌های فایل</h2>
 
-            {% for column in columns %}
+            <ul class="column-list">
 
-                <li>{{ column }}</li>
+                {% for column in columns %}
 
-            {% endfor %}
+                    <li>{{ column }}</li>
 
-        </ul>
+                {% endfor %}
+
+            </ul>
+
+        </div>
 
     {% endif %}
 
 
     {% if preview %}
 
-        <h2>Preview</h2>
+        <div class="section">
 
-        {{ preview|safe }}
+            <h2>پیش‌نمایش اطلاعات</h2>
+
+            <div class="table-wrapper">
+                {{ preview|safe }}
+            </div>
+
+        </div>
 
     {% endif %}
 
-</body>
-</html>
+</div>
+
+{% endblock %}
