@@ -68,3 +68,23 @@ def get_high_risk_customers(company):
     )
 
     return risk_scores
+
+
+def get_overdue_invoices(company):
+    invoices = (
+        Invoice.objects
+        .filter(
+            company=company,
+        )
+        .select_related("customer")
+        .order_by("-due_date")
+    )
+
+    overdue_invoices = [
+        invoice
+        for invoice in invoices
+        if invoice.remaining_amount > 0
+        and invoice.due_date < date.today()
+    ]
+
+    return overdue_invoices
