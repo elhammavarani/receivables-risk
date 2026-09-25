@@ -88,3 +88,52 @@ def get_overdue_invoices(company):
     ]
 
     return overdue_invoices
+
+
+def get_today_actions(company):
+    invoices = (
+        Invoice.objects
+        .filter(
+            company=company,
+            due_date__lt=date.today(),
+        )
+        .select_related("customer")
+    )
+
+    actions = []
+
+    for invoice in invoices:
+        if invoice.remaining_amount <= 0:
+            continue
+
+        overdue_days = (
+            date.today() - invoice.due_date
+        ).days
+
+        risk = RiskScore.objects.filter(
+            company=company,
+            customer=invoice.customer,
+        ).first()
+
+        risk_score = risk.score if risk else 0
+
+        priority = risk_score * float(
+            invoice.remaining_amount
+        )
+
+        actions.append(
+            {
+                "customer": invoice.customer,
+                "invoice": invoice,
+                "overdue_days": overdue_days,
+                "risk_score": risk_score,
+                "priority": priority,
+            }
+        )
+
+    actions.sort(
+        key=lambda item: item["priority"],
+        reverse=True,
+    )
+
+    return actions

@@ -25,6 +25,12 @@ urlpatterns = [
 
     path("imports/", include("imports.urls")),
     path("dashboard/", include("dashboard.urls")),
+
+    path(
+        "customers/",
+        include("customers.urls"),
+    ),
+    
     path("", upload_file, name="home"),
 ]
 

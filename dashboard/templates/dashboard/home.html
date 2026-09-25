@@ -58,9 +58,11 @@
             <div class="risk-item">
 
                 <div>
-                    <strong>
-                        {{ risk.customer.name }}
-                    </strong>
+                    <a href="{% url 'customer_detail' risk.customer.id %}">
+                        <strong>
+                            {{ risk.customer.name }}
+                        </strong>
+                    </a>
 
                     <div>
                         سطح ریسک:
@@ -80,6 +82,52 @@
 
         <div class="empty">
             در حال حاضر مشتری پرریسکی ثبت نشده است.
+        </div>
+
+    {% endif %}
+
+</div>
+
+
+<div class="section">
+
+    <h2>اقدامات امروز</h2>
+
+    {% if today_actions %}
+
+        {% for action in today_actions %}
+
+            <div class="risk-item">
+
+                <div>
+                    <strong>
+                        <a href="{% url 'customer_detail' action.customer.id %}">
+                            {{ action.customer.name }}
+                        </a>
+                    </strong>
+
+                    <div>
+                        مبلغ:
+                        {{ action.invoice.remaining_amount }}
+                    </div>
+
+                    <div>
+                        {{ action.overdue_days }} روز تأخیر
+                    </div>
+                </div>
+
+                <div class="risk-score">
+                    ریسک {{ action.risk_score }}
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="empty">
+            در حال حاضر اقدام فوری ثبت نشده است.
         </div>
 
     {% endif %}

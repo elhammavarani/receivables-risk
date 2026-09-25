@@ -5,6 +5,7 @@ from companies.models import UserProfile
 from .services import (
     get_dashboard_summary,
     get_high_risk_customers,
+    get_today_actions,
 )
 
 
@@ -33,11 +34,16 @@ def dashboard_home(request):
         profile.company
     )
 
+    today_actions = get_today_actions(
+        profile.company
+    )
+
     return render(
         request,
         "dashboard/home.html",
         {
             **summary,
             "high_risk_customers": high_risk_customers,
+            "today_actions": today_actions,
         },
     )

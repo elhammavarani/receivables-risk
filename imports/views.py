@@ -12,7 +12,10 @@ from invoices.models import Invoice
 
 from risk.risk_engine import calculate_risk
 
+from django.contrib.auth.decorators import login_required
 
+
+@login_required
 def upload_file(request):
 
     profile = None
