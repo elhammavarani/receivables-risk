@@ -39,5 +39,26 @@
         </li>
     </ul>
 
+
+    <hr>
+
+    <h2>مشتریان پرریسک</h2>
+
+    {% if high_risk_customers %}
+        <ul>
+            {% for risk in high_risk_customers %}
+                <li>
+                    {{ risk.customer.name }}
+                    —
+                    امتیاز ریسک: {{ risk.score }}
+                    —
+                    سطح: {{ risk.risk_level }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+    <p>در حال حاضر مشتری پرریسکی ثبت نشده است.</p>
+{% endif %}
+
 </body>
 </html>

@@ -54,3 +54,17 @@ def get_dashboard_summary(company):
         "high_risk_customer_count": high_risk_customer_count,
         "overdue_percentage": overdue_percentage,
     }
+
+
+def get_high_risk_customers(company):
+    risk_scores = (
+        RiskScore.objects
+        .filter(
+            company=company,
+            score__gte=61,
+        )
+        .select_related("customer")
+        .order_by("-score")
+    )
+
+    return risk_scores

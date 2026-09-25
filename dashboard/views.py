@@ -2,7 +2,10 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
 from companies.models import UserProfile
-from .services import get_dashboard_summary
+from .services import (
+    get_dashboard_summary,
+    get_high_risk_customers,
+)
 
 
 @login_required
@@ -26,8 +29,15 @@ def dashboard_home(request):
         profile.company
     )
 
+    high_risk_customers = get_high_risk_customers(
+        profile.company
+    )
+
     return render(
         request,
         "dashboard/home.html",
-        summary,
+        {
+            **summary,
+            "high_risk_customers": high_risk_customers,
+        },
     )
