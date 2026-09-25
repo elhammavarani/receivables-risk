@@ -2,21 +2,63 @@
 
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>{% block title %}سیستم مدیریت مطالبات{% endblock %}</title>
+    <title>
+        {% block title %}
+        سیستم مدیریت مطالبات
+        {% endblock %}
+    </title>
 
-    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+    <link
+        rel="stylesheet"
+        href="{% static 'css/app.css' %}"
+    >
 </head>
 
 <body>
 
+    {% if user.is_authenticated %}
+
+        <header class="topbar">
+
+            <div class="topbar-inner">
+
+                <div class="topbar-title">
+                    سیستم مدیریت مطالبات
+                </div>
+
+                <form
+                    method="post"
+                    action="{% url 'logout' %}"
+                >
+                    {% csrf_token %}
+
+                    <button
+                        type="submit"
+                        class="logout-button"
+                    >
+                        خروج
+                    </button>
+                </form>
+
+            </div>
+
+        </header>
+
+    {% endif %}
+
+
     <main class="page-container">
+
         {% block content %}
         {% endblock %}
+
     </main>
 
 </body>
+
 </html>
