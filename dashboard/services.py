@@ -100,32 +100,67 @@ def get_today_actions(company):
         .select_related("customer")
     )
 
-    actions = []
+    customer_actions = {}
 
     for invoice in invoices:
+
         if invoice.remaining_amount <= 0:
             continue
 
-        overdue_days = (
-            date.today() - invoice.due_date
-        ).days
+        customer_id = invoice.customer.id
+
+        if customer_id not in customer_actions:
+            customer_actions[customer_id] = {
+                "customer": invoice.customer,
+                "total_overdue_amount": invoice.remaining_amount,
+                "overdue_days": (
+                    date.today() - invoice.due_date
+                ).days,
+            }
+
+        else:
+            customer_actions[customer_id][
+                "total_overdue_amount"
+            ] += invoice.remaining_amount
+
+            overdue_days = (
+                date.today() - invoice.due_date
+            ).days
+
+            if overdue_days > customer_actions[customer_id][
+                "overdue_days"
+            ]:
+                customer_actions[customer_id][
+                    "overdue_days"
+                ] = overdue_days
+
+    actions = []
+
+    for customer_data in customer_actions.values():
+
+        customer = customer_data["customer"]
 
         risk = RiskScore.objects.filter(
             company=company,
-            customer=invoice.customer,
+            customer=customer,
         ).first()
 
         risk_score = risk.score if risk else 0
 
-        priority = risk_score * float(
-            invoice.remaining_amount
+        priority = (
+            risk_score
+            * float(customer_data["total_overdue_amount"])
         )
 
         actions.append(
             {
-                "customer": invoice.customer,
-                "invoice": invoice,
-                "overdue_days": overdue_days,
+                "customer": customer,
+                "total_overdue_amount": customer_data[
+                    "total_overdue_amount"
+                ],
+                "overdue_days": customer_data[
+                    "overdue_days"
+                ],
                 "risk_score": risk_score,
                 "priority": priority,
             }
