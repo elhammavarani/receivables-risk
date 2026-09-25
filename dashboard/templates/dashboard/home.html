@@ -27,6 +27,16 @@
             تعداد فاکتورهای معوق:
             {{ overdue_invoice_count }}
         </li>
+
+        <li>
+            تعداد مشتریان پرریسک:
+            {{ high_risk_customer_count }}
+        </li>
+
+        <li>
+            درصد مطالبات معوق:
+            {{ overdue_percentage|floatformat:1 }} %
+        </li>
     </ul>
 
 </body>
