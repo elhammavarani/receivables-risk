@@ -6,141 +6,175 @@
 
 {% block content %}
 
-<h1>جزئیات مشتری</h1>
+<div class="customer-page">
 
-<div class="section">
+    <div class="page-heading">
+        <div class="customer-heading-content">
 
-    <h2>{{ customer.name }}</h2>
+            <div class="page-kicker">
+                اطلاعات مشتری
+            </div>
 
-    <div class="summary-list">
+            <div class="customer-name">
+                {{ customer.name }}
+            </div>
 
-        <div class="summary-item">
-            <span>امتیاز ریسک</span>
-
-            <strong>
-                {% if risk %}
-                    {{ risk.score }}
-                {% else %}
-                    -
-                {% endif %}
-            </strong>
         </div>
+    </div>
 
-        <div class="summary-item">
-            <span>سطح ریسک</span>
 
-            <strong>
-                {% if risk %}
-                    {{ risk.risk_level }}
-                {% else %}
-                    -
-                {% endif %}
-            </strong>
-        </div>
+    <div class="section">
 
-        <div class="summary-item">
-            <span>مجموع مانده بدهی</span>
+        <h2>خلاصه وضعیت</h2>
 
-            <strong>
-                {{ total_debt }}
-            </strong>
-        </div>
+        <div class="summary-list">
 
-        <div class="summary-item">
-            <span>تعداد فاکتورهای باز</span>
+            <div class="summary-item">
+                <span>امتیاز ریسک</span>
 
-            <strong>
-                {{ open_invoice_count }}
-            </strong>
+                <strong>
+                    {% if risk %}
+                        {{ risk.score }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </strong>
+            </div>
+
+
+            <div class="summary-item">
+                <span>سطح ریسک</span>
+
+                <strong>
+                    {% if risk %}
+                        {{ risk.risk_level }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </strong>
+            </div>
+
+
+            <div class="summary-item">
+                <span>مجموع مانده بدهی</span>
+
+                <strong>
+                    {{ total_debt }}
+                </strong>
+            </div>
+
+
+            <div class="summary-item">
+                <span>تعداد فاکتورهای باز</span>
+
+                <strong>
+                    {{ open_invoice_count }}
+                </strong>
+            </div>
+
         </div>
 
     </div>
 
-</div>
+
+    <div class="section">
+
+        <h2>دلایل ریسک</h2>
+
+        {% if risk and risk.reasons %}
+
+            <div class="risk-reasons">
+                {{ risk.reasons }}
+            </div>
+
+        {% else %}
+
+            <div class="empty">
+                دلیل خاصی برای ریسک ثبت نشده است.
+            </div>
+
+        {% endif %}
+
+    </div>
 
 
-<div class="section">
+    <div class="section">
 
-    <h2>دلایل ریسک</h2>
+        <div class="section-heading">
 
-    {% if risk and risk.reasons %}
+            <div>
+                <h2>فاکتورهای مشتری</h2>
+                <p class="section-description">
+                    وضعیت فاکتورهای ثبت‌شده برای این مشتری
+                </p>
+            </div>
 
-        <p>
-            {{ risk.reasons }}
-        </p>
-
-    {% else %}
-
-        <div class="empty">
-            دلیل خاصی برای ریسک ثبت نشده است.
         </div>
 
-    {% endif %}
 
-</div>
+        {% if invoices %}
 
+            <div class="table-wrapper">
 
-<div class="section">
+                <table>
 
-    <h2>فاکتورهای مشتری</h2>
-
-    {% if invoices %}
-
-        <div class="table-wrapper">
-
-            <table>
-
-                <thead>
-                    <tr>
-                        <th>شماره فاکتور</th>
-                        <th>مبلغ</th>
-                        <th>پرداخت شده</th>
-                        <th>مانده</th>
-                        <th>تاریخ سررسید</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-
-                    {% for invoice in invoices %}
-
+                    <thead>
                         <tr>
-                            <td>
-                                {{ invoice.invoice_number }}
-                            </td>
-
-                            <td>
-                                {{ invoice.amount }}
-                            </td>
-
-                            <td>
-                                {{ invoice.paid_amount }}
-                            </td>
-
-                            <td>
-                                {{ invoice.remaining_amount }}
-                            </td>
-
-                            <td>
-                                {{ invoice.due_date }}
-                            </td>
+                            <th>شماره فاکتور</th>
+                            <th>مبلغ</th>
+                            <th>پرداخت شده</th>
+                            <th>مانده</th>
+                            <th>تاریخ سررسید</th>
                         </tr>
+                    </thead>
 
-                    {% endfor %}
+                    <tbody>
 
-                </tbody>
+                        {% for invoice in invoices %}
 
-            </table>
+                            <tr>
 
-        </div>
+                                <td>
+                                    {{ invoice.invoice_number }}
+                                </td>
 
-    {% else %}
+                                <td>
+                                    {{ invoice.amount }}
+                                </td>
 
-        <div class="empty">
-            فاکتوری برای این مشتری ثبت نشده است.
-        </div>
+                                <td>
+                                    {{ invoice.paid_amount }}
+                                </td>
 
-    {% endif %}
+                                <td>
+                                    <strong>
+                                        {{ invoice.remaining_amount }}
+                                    </strong>
+                                </td>
+
+                                <td>
+                                    {{ invoice.due_date }}
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <div class="empty">
+                فاکتوری برای این مشتری ثبت نشده است.
+            </div>
+
+        {% endif %}
+
+    </div>
 
 </div>
 

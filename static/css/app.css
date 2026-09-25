@@ -482,3 +482,121 @@ h2 {
         font-size: 15px;
     }
 }
+
+
+.customer-page {
+    width: 100%;
+}
+
+.page-heading {
+    margin-bottom: 40px !important;
+}
+
+.page-kicker {
+    color: #9a8068;
+    font-size: 13px !important;
+    margin-bottom: 18px !important;
+    line-height: 1.6;
+}
+
+.page-heading h1 {
+    margin: 0 !important;
+    padding: 0 !important;
+    color: #4f4033;
+    font-size: 22px !important;
+    line-height: 1.5 !important;
+}
+
+
+.section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+}
+
+.section-description {
+    margin: 6px 0 0;
+    color: #8a7766;
+    font-size: 14px;
+}
+
+
+.risk-reasons {
+    padding: 16px 18px;
+    background: #f7f0e7;
+    border: 1px solid #e7d9c9;
+    border-radius: 12px;
+    color: #665344;
+    line-height: 1.9;
+}
+
+
+.customer-page .summary-list {
+    margin-top: 20px;
+}
+
+
+.customer-page .summary-item {
+    padding: 16px 0;
+}
+
+
+.customer-page .summary-item strong {
+    color: #4f4033;
+}
+
+
+.customer-page table {
+    width: 100%;
+}
+
+
+.customer-page td strong {
+    color: #5d4938;
+}
+
+
+.page-heading {
+    margin-bottom: 40px !important;
+    padding-bottom: 10px !important;
+}
+
+.page-kicker {
+    color: #9a8068 !important;
+    font-size: 13px !important;
+    line-height: 1.6 !important;
+    margin: 0 0 22px 0 !important;
+}
+
+.customer-name {
+    display: block !important;
+    color: #493528 !important;
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    line-height: 1.5 !important;
+}
+
+
+.customer-heading-content {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 28px !important;
+}
+
+.customer-heading-content .page-kicker {
+    margin: 0 !important;
+    padding: 0 !important;
+    color: #9a8068 !important;
+    font-size: 16px !important;
+    line-height: 1 !important;
+}
+
+.customer-heading-content .customer-name {
+    margin: 0 !important;
+    padding: 0 !important;
+    color: #493528 !important;
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    line-height: 0.5 !important;
+}
