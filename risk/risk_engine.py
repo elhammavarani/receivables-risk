@@ -51,14 +51,30 @@ def get_risk_reasons(
         reasons.append(
             f"{overdue_days} روز تأخیر"
         )
+    elif overdue_days > 0:
+        reasons.append(
+            f"{overdue_days} روز تأخیر"
+        )
+    else:
+        reasons.append(
+            "فاکتور هنوز معوق نشده است"
+        )
 
-    if debt_amount >= 200_000_000:
+    if debt_amount >= 500_000_000:
+        reasons.append(
+            "مبلغ بدهی بسیار بالا است"
+        )
+    elif debt_amount >= 200_000_000:
         reasons.append(
             "مبلغ بدهی بالا است"
         )
     elif debt_amount >= 100_000_000:
         reasons.append(
             "مبلغ بدهی قابل توجه است"
+        )
+    elif debt_amount > 0:
+        reasons.append(
+            "مانده بدهی وجود دارد"
         )
 
     return reasons

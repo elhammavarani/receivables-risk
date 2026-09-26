@@ -309,6 +309,7 @@ def upload_file(request):
 
             # ذخیره مشتری‌ها و فاکتورها
 
+            
             if company:
                 for _, row in df.iterrows():
                     customer_code = str(row["کد مشتری"]).strip()
@@ -321,22 +322,23 @@ def upload_file(request):
                         },
                     )
 
+                    invoice_number = str(
+                        row["شماره فاکتور"]
+                    ).strip()
 
-            invoice_number = str(row["شماره فاکتور"]).strip()
+                    Invoice.objects.update_or_create(
+                        company=company,
+                        invoice_number=invoice_number,
+                        defaults={
+                            "customer": customer,
+                            "amount": row["مبلغ فاکتور"],
+                            "paid_amount": row["مبلغ پرداختشده"],
+                            "invoice_date": row["تاریخ فاکتور"].date(),
+                            "due_date": row["مهلت پرداخت"].date(),
+                        },
+                    )
 
-            Invoice.objects.update_or_create(
-                company=company,
-                invoice_number=invoice_number,
-                defaults={
-                    "customer": customer,
-                    "amount": row["مبلغ فاکتور"],
-                    "paid_amount": row["مبلغ پرداختشده"],
-                    "invoice_date": row["تاریخ فاکتور"].date(),
-                    "due_date": row["مهلت پرداخت"].date(),
-                },
-            )
-
-            calculate_company_risks(company)
+                calculate_company_risks(company)
 
 
             # خلاصه مالی

@@ -600,3 +600,12 @@ h2 {
     font-weight: 700 !important;
     line-height: 0.5 !important;
 }
+
+
+.topbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+

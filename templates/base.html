@@ -31,19 +31,30 @@
                     سیستم مدیریت مطالبات
                 </div>
 
-                <form
-                    method="post"
-                    action="{% url 'logout' %}"
-                >
-                    {% csrf_token %}
+                <div class="topbar-actions">
 
-                    <button
-                        type="submit"
-                        class="logout-button"
+                    <a
+                        href="{% url 'dashboard_home' %}"
+                        class="dashboard-link"
                     >
-                        خروج
-                    </button>
-                </form>
+                        داشبورد
+                    </a>
+
+                    <form
+                        method="post"
+                        action="{% url 'logout' %}"
+                    >
+                        {% csrf_token %}
+
+                        <button
+                            type="submit"
+                            class="logout-button"
+                        >
+                            خروج
+                        </button>
+                    </form>
+
+                </div>
 
             </div>
 

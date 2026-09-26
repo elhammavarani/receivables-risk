@@ -29,5 +29,5 @@ class RiskScore(models.Model):
         auto_now=True,
     )
 
-    def str(self):
+    def __str__(self):
         return f"{self.customer.name} - {self.score}"
