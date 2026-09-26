@@ -12,6 +12,8 @@ from invoices.models import Invoice
 
 from risk.risk_engine import calculate_risk
 
+from risk.services import calculate_company_risks
+
 from django.contrib.auth.decorators import login_required
 
 
@@ -333,6 +335,8 @@ def upload_file(request):
                     "due_date": row["مهلت پرداخت"].date(),
                 },
             )
+
+            calculate_company_risks(company)
 
 
             # خلاصه مالی
