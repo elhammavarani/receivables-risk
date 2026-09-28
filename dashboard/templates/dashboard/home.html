@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load money_filters %}
 
 {% block title %}
 داشبورد مطالبات
@@ -6,133 +7,297 @@
 
 {% block content %}
 
-<h1>داشبورد مطالبات</h1>
+<div class="dashboard-page">
 
-<div class="cards">
+    <div class="dashboard-heading">
 
-    <div class="card">
-        <div class="card-title">کل مطالبات</div>
-        <div class="card-value">
-            {{ total_receivables }}
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-title">مطالبات معوق</div>
-        <div class="card-value">
-            {{ total_overdue }}
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-title">فاکتورهای معوق</div>
-        <div class="card-value">
-            {{ overdue_invoice_count }}
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-title">مشتریان پرریسک</div>
-        <div class="card-value">
-            {{ high_risk_customer_count }}
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-title">درصد مطالبات معوق</div>
-        <div class="card-value">
-            {{ overdue_percentage|floatformat:1 }}%
-        </div>
-    </div>
-
-</div>
-
-<div class="section">
-
-    <h2>مشتریان پرریسک</h2>
-
-    {% if high_risk_customers %}
-
-        {% for risk in high_risk_customers %}
-
-            <div class="risk-item">
-
-                <div>
-                    <a href="{% url 'customer_detail' risk.customer.id %}">
-                        <strong>
-                            {{ risk.customer.name }}
-                        </strong>
-                    </a>
-
-                    <div>
-                        سطح ریسک:
-                        {{ risk.risk_level }}
-                    </div>
-                </div>
-
-                <div class="risk-score">
-                    امتیاز {{ risk.score }}
-                </div>
-
+        <div>
+            <div class="dashboard-kicker">
+                کنترل و پایش مطالبات
             </div>
 
-        {% endfor %}
+            <h1>
+                داشبورد مطالبات
+            </h1>
 
-    {% else %}
-
-        <div class="empty">
-            در حال حاضر مشتری پرریسکی ثبت نشده است.
+            <p>
+                نمای کلی وضعیت مطالبات و اولویت‌های وصول
+            </p>
         </div>
 
-    {% endif %}
-
-</div>
+    </div>
 
 
-<div class="section">
+    <!-- آمار اصلی -->
 
-    <h2>اقدامات امروز</h2>
+    <div class="dashboard-stats">
 
-    {% if today_actions %}
+        <div class="dashboard-stat-card money-card">
 
-        {% for action in today_actions %}
+            <div class="dashboard-stat-label">
+                کل مطالبات
+            </div>
 
-            <div class="risk-item">
+            <div class="dashboard-stat-value">
+                {{ total_receivables|human_money }}
+            </div>
 
-                <div>
+            <div class="dashboard-stat-unit">
+                تومان
+            </div>
 
-                    <strong>
-                        <a href="{% url 'customer_detail' action.customer.id %}">
-                            {{ action.customer.name }}
+        </div>
+
+
+        <div class="dashboard-stat-card money-card">
+
+            <div class="dashboard-stat-label">
+                مطالبات معوق
+            </div>
+
+            <div class="dashboard-stat-value">
+                {{ total_overdue|human_money }}
+            </div>
+
+            <div class="dashboard-stat-unit">
+                تومان
+            </div>
+
+        </div>
+
+
+        <div class="dashboard-stat-card">
+
+            <div class="dashboard-stat-label">
+                درصد مطالبات معوق
+            </div>
+
+            <div class="dashboard-stat-value">
+                {{ overdue_percentage|floatformat:1 }}%
+            </div>
+
+            <div class="dashboard-stat-unit">
+                از کل مطالبات
+            </div>
+
+        </div>
+
+
+        <div class="dashboard-stat-card">
+
+            <div class="dashboard-stat-label">
+                مشتریان پرریسک
+            </div>
+
+            <div class="dashboard-stat-value">
+                {{ high_risk_customer_count }}
+            </div>
+
+            <div class="dashboard-stat-unit">
+                مشتری
+            </div>
+
+        </div>
+
+
+        <div class="dashboard-stat-card">
+
+            <div class="dashboard-stat-label">
+                فاکتورهای معوق
+            </div>
+
+            <div class="dashboard-stat-value">
+                {{ overdue_invoice_count }}
+            </div>
+
+            <div class="dashboard-stat-unit">
+                فقره
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- مشتریان پرریسک -->
+
+    <div class="dashboard-section">
+
+        <div class="dashboard-section-header">
+
+            <div>
+                <div class="dashboard-section-kicker">
+                    ریسک مطالبات
+                </div>
+
+                <h2>
+                    مشتریان پرریسک
+                </h2>
+
+                <p>
+                    مشتریانی که نیاز به بررسی و پیگیری بیشتری دارند
+                </p>
+            </div>
+
+        </div>
+
+
+        {% if high_risk_customers %}
+
+            <div class="dashboard-risk-list">
+
+                {% for risk in high_risk_customers %}
+
+                    <div class="dashboard-risk-item">
+
+                        <div class="dashboard-risk-main">
+
+                            <a
+                                href="{% url 'customer_detail' risk.customer.id %}"
+                                class="dashboard-customer-name"
+                            >
+                                {{ risk.customer.name }}
+                            </a>
+
+                            <div class="dashboard-risk-level">
+                                سطح ریسک:
+                                {{ risk.risk_level }}
+                            </div>
+
+                        </div>
+
+
+                        <div class="dashboard-risk-score">
+
+                            <span>
+                                امتیاز ریسک
+                            </span>
+
+                            <strong>
+                                {{ risk.score }}
+                            </strong>
+
+                        </div>
+
+                        <a
+                            href="{% url 'customer_detail' risk.customer.id %}"
+                            class="dashboard-detail-link"
+                        >
+                            مشاهده جزئیات
                         </a>
-                    </strong>
 
-                    <div>
-                        مبلغ:
-                        {{ action.total_overdue_amount }}
                     </div>
 
-                    <div>
-                        {{ action.overdue_days }} روز تأخیر
-                    </div>
-
-                </div>
-
-                <div class="risk-score">
-                    ریسک {{ action.risk_score }}
-                </div>
+                {% endfor %}
 
             </div>
 
-        {% endfor %}
+        {% else %}
 
-    {% else %}
+            <div class="empty">
+                در حال حاضر مشتری پرریسکی ثبت نشده است.
+            </div>
 
-        <div class="empty">
-            در حال حاضر اقدام فوری ثبت نشده است.
+        {% endif %}
+
+    </div>
+
+
+    <!-- اقدامات امروز -->
+
+    <div class="dashboard-section today-actions-section">
+
+        <div class="dashboard-section-header">
+
+            <div>
+                <div class="dashboard-section-kicker">
+                    اولویت وصول
+                </div>
+
+                <h2>
+                    اقدامات امروز
+                </h2>
+
+                <p>
+                    مطالباتی که بر اساس ریسک و میزان بدهی، نیاز به پیگیری دارند
+                </p>
+            </div>
+
         </div>
 
-    {% endif %}
+
+        {% if today_actions %}
+
+            <div class="today-actions-list">
+
+                {% for action in today_actions %}
+
+                    <div class="today-action-item">
+
+                        <div class="today-action-priority">
+                            {{ forloop.counter }}
+                        </div>
+
+
+                        <div class="today-action-main">
+
+                            <a
+                                href="{% url 'customer_detail' action.customer.id %}"
+                                class="dashboard-customer-name"
+                            >
+                                {{ action.customer.name }}
+                            </a>
+
+                            <div class="today-action-meta">
+
+                                <span>
+                                    {{ action.overdue_days }} روز تأخیر
+                                </span>
+
+                                <span>
+                                    ریسک {{ action.risk_score }}
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="today-action-amount">
+
+                            <strong>
+                                {{ action.total_overdue_amount|human_money }}
+                            </strong>
+
+                            <span>
+                                تومان معوق
+                            </span>
+
+                        </div>
+
+
+                        <a
+                            href="{% url 'customer_detail' action.customer.id %}"
+                            class="dashboard-action-button"
+                        >
+                            بررسی
+                        </a>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="empty">
+                در حال حاضر اقدام فوری ثبت نشده است.
+            </div>
+
+        {% endif %}
+
+    </div>
 
 </div>
 

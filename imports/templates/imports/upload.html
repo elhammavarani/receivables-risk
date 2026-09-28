@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load money_filters %}
 
 {% block title %}
 ورود اطلاعات مطالبات
@@ -8,29 +9,89 @@
 
 <div class="import-page">
 
-    <h1>ورود اطلاعات مطالبات</h1>
+    <div class="import-container">
 
-    {% if error %}
-        <div class="alert alert-error">
-            {{ error }}
+        <!-- Page heading -->
+        <div class="import-heading">
+
+            <div class="import-kicker">
+                مدیریت مطالبات
+            </div>
+
+            <h1>
+                ورود اطلاعات مطالبات
+            </h1>
+
+            <p>
+                فایل Excel یا CSV مطالبات شرکت را وارد کنید تا اطلاعات برای تحلیل و ارزیابی ریسک آماده شود.
+            </p>
+
         </div>
-    {% endif %}
 
 
-    <!-- Upload file -->
-    <div class="section">
+        <!-- Upload card -->
+        <div class="import-card">
 
-        <h2>آپلود فایل</h2>
+            <div class="import-card-header">
 
-        <form method="post" enctype="multipart/form-data">
+                <div class="import-icon">
+                    ↑
+                </div>
 
-            {% csrf_token %}
+                <div>
+                    <h2>
+                        آپلود فایل
+                    </h2>
 
-            <div class="form-group">
+                    <p>
+                        فایل اطلاعات مطالبات خود را انتخاب کنید.
+                    </p>
+                </div>
 
-                <label for="file">
-                    فایل Excel یا CSV
+            </div>
+
+
+            {% if error %}
+
+                <div class="import-alert">
+                    {{ error }}
+                </div>
+
+            {% endif %}
+
+
+            <form
+                method="post"
+                enctype="multipart/form-data"
+                class="import-form"
+            >
+
+                {% csrf_token %}
+
+                <label class="upload-zone" for="file">
+
+                    <div class="upload-zone-icon">
+                        ↑
+                    </div>
+
+                    <div class="upload-zone-content">
+
+                        <strong id="file-name">
+                            فایل Excel یا CSV را انتخاب کنید
+                        </strong>
+
+                        <span>
+                            فرمت‌های مجاز: XLSX ،XLS ،CSV
+                        </span>
+
+                    </div>
+
+                    <span class="upload-select-button">
+                        انتخاب فایل
+                    </span>
+
                 </label>
+
 
                 <input
                     id="file"
@@ -40,149 +101,311 @@
                     required
                 >
 
-            </div>
 
-            <button type="submit">
-                آپلود فایل
-            </button>
+                <div class="upload-footer">
 
-        </form>
+                    <div class="upload-hint">
+                        اطلاعات فایل پس از دریافت برای تحلیل مطالبات بررسی می‌شود.
+                    </div>
 
-    </div>
-
-
-    {% if uploaded_file %}
-
-        <div class="section">
-
-            <h2>فایل دریافت شد</h2>
-
-            <p>
-                {{ uploaded_file.name }}
-            </p>
-
-        </div>
-
-    {% endif %}
-
-
-    {% if sheet_names %}
-
-        <div class="section">
-
-            <h2>انتخاب Sheet</h2>
-
-            <form method="post">
-
-                {% csrf_token %}
-
-                <div class="form-group">
-
-                    <label for="sheet">
-                        Sheet موردنظر
-                    </label>
-
-                    <select id="sheet" name="sheet">
-
-                        {% for sheet in sheet_names %}
-
-                            <option
-                                value="{{ sheet }}"
-                                {% if sheet == selected_sheet %}
-                                    selected
-                                {% endif %}
-                            >
-                                {{ sheet }}
-                            </option>
-
-                        {% endfor %}
-
-                    </select>
+                    <button
+                        type="submit"
+                        class="upload-submit"
+                    >
+                        آپلود و ادامه
+                    </button>
 
                 </div>
-
-                <button type="submit">
-                    نمایش Sheet
-                </button>
 
             </form>
 
         </div>
 
-    {% endif %}
 
+        {% if uploaded_file %}
 
-    {% if summary %}
+            <div class="import-result">
 
-        <div class="section">
-
-            <h2>خلاصه مالی</h2>
-
-            <div class="summary-list">
-
-                <div class="summary-item">
-                    <span>کل مطالبات</span>
-                    <strong>
-                        {{ summary.total_receivables }}
-                    </strong>
+                <div class="result-icon">
+                    ✓
                 </div>
 
-                <div class="summary-item">
-                    <span>مطالبات معوق</span>
+                <div>
+
                     <strong>
-                        {{ summary.total_overdue }}
+                        فایل دریافت شد
                     </strong>
+
+                    <span>
+                        {{ uploaded_file.name }}
+                    </span>
+
                 </div>
 
-                <div class="summary-item">
-                    <span>تعداد فاکتورهای معوق</span>
-                    <strong>
-                        {{ summary.overdue_invoice_count }}
-                    </strong>
+            </div>
+
+        {% endif %}
+
+
+        {% if sheet_names %}
+
+            <div class="import-card secondary-card">
+
+                <div class="import-card-header">
+
+                    <div class="import-icon">
+                        02
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            انتخاب Sheet
+                        </h2>
+
+                        <p>
+                            Sheet موردنظر برای تحلیل را انتخاب کنید.
+                        </p>
+
+                    </div>
+
                 </div>
+
+
+                <form method="post">
+
+                    {% csrf_token %}
+
+                    <div class="select-wrapper">
+
+                        <label for="sheet">
+                            Sheet موردنظر
+                        </label>
+
+                        <select
+                            id="sheet"
+                            name="sheet"
+                        >
+
+                        {% for sheet in sheet_names %}
+
+                                <option
+                                    value="{{ sheet }}"
+                                    {% if sheet == selected_sheet %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ sheet }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="secondary-submit"
+                    >
+                        نمایش Sheet
+                    </button>
+
+                </form>
+
+            </div>
+
+        {% endif %}
+
+
+        <!-- خلاصه مالی -->
+
+        {% if summary %}
+
+    <div class="section">
+
+        <div class="import-card-header">
+
+            <div class="import-icon">
+                03
+            </div>
+
+            <div>
+                <h2>خلاصه مالی</h2>
+                <p>نمای کلی وضعیت مطالبات، مبالغ معوق و فاکتورهای سررسیده.</p>
+            </div>
+
+        </div>
+
+
+        <div class="import-summary">
+
+            <div class="import-summary-item">
+
+                <span>
+                    کل مطالبات
+                </span>
+
+                <strong>
+                    {{ summary.total_receivables | human_money }}
+                </strong>
+
+                <small>
+                    تومان
+                </small>
+
+            </div>
+
+
+            <div class="import-summary-item">
+
+                <span>
+                    مطالبات معوق
+                </span>
+
+                <strong>
+                    {{ summary.total_overdue | human_money }}
+                </strong>
+
+                <small>
+                    تومان
+                </small>
+
+            </div>
+
+
+            <div class="import-summary-item">
+
+                <span>
+                    فاکتورهای معوق
+                </span>
+
+                <strong>
+                    {{ summary.overdue_invoice_count }}
+                </strong>
+
+                <small>
+                    فقره
+                </small>
 
             </div>
 
         </div>
 
-    {% endif %}
+    </div>
+
+{% endif %}
 
 
-    {% if columns %}
+        {% if columns %}
 
-        <div class="section">
+            <div class="import-card">
 
-            <h2>ستون‌های فایل</h2>
+                <div class="import-card-header">
 
-            <ul class="column-list">
+                    <div class="import-icon">
+                        04
+                    </div>
 
-                {% for column in columns %}
+                    <div>
 
-                    <li>{{ column }}</li>
+                        <h2>
+                            ستون‌های فایل
+                        </h2>
 
-                {% endfor %}
+                        <p>
+                            ستون‌های شناسایی‌شده در فایل.
+                        </p>
 
-            </ul>
+                    </div>
 
-        </div>
-
-    {% endif %}
+                </div>
 
 
-    {% if preview %}
+                <ul class="import-columns">
 
-        <div class="section">
+                    {% for column in columns %}
 
-            <h2>پیش‌نمایش اطلاعات</h2>
+                        <li>
+                            {{ column }}
+                        </li>
 
-            <div class="table-wrapper">
-                {{ preview|safe }}
+                    {% endfor %}
+
+                </ul>
+
             </div>
 
-        </div>
+        {% endif %}
 
-    {% endif %}
+
+        {% if preview %}
+
+            <div class="import-card import-preview">
+
+                <div class="import-card-header">
+
+                    <div class="import-icon">
+                        05
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            پیش‌نمایش اطلاعات
+                        </h2>
+
+                        <p>
+                            بررسی اولیه داده‌های فایل.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="preview-table-wrapper">
+                    {{ preview|safe }}
+                </div>
+
+            </div>
+
+        {% endif %}
+
+    </div>
 
 </div>
+
+
+<script>
+
+    const fileInput = document.getElementById("file");
+    const fileName = document.getElementById("file-name");
+
+    if (fileInput && fileName) {
+
+        fileInput.addEventListener("change", function () {
+
+            if (this.files && this.files.length > 0) {
+
+                fileName.textContent =
+                    this.files[0].name;
+
+                fileName.classList.add("selected");
+
+            } else {
+
+                fileName.textContent =
+                    "فایل Excel یا CSV را انتخاب کنید";
+
+                fileName.classList.remove("selected");
+            }
+
+        });
+
+    }
+
+</script>
 
 {% endblock %}

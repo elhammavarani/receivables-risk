@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load money_filters %}
 
 {% block title %}
 جزئیات مشتری
@@ -8,31 +9,55 @@
 
 <div class="customer-page">
 
-    <div class="page-heading">
-        <div class="customer-heading-content">
+    <!-- HEADER -->
 
+    <div class="customer-detail-header">
+
+        <div>
             <div class="page-kicker">
                 اطلاعات مشتری
             </div>
 
-            <div class="customer-name">
+            <h1 class="customer-name">
                 {{ customer.name }}
-            </div>
+            </h1>
 
+            <p class="customer-detail-subtitle">
+                وضعیت مالی، ریسک و فاکتورهای باز مشتری
+            </p>
         </div>
+
+        <a
+            href="{% url 'dashboard_home' %}"
+            class="customer-back-button"
+        >
+            بازگشت به داشبورد
+        </a>
+
     </div>
 
 
-    <div class="section">
+    <!-- SUMMARY -->
 
-        <h2>خلاصه وضعیت</h2>
+    <div class="customer-summary-section">
+
+        <div class="customer-section-title">
+            <div class="dashboard-section-kicker">
+                نمای کلی
+            </div>
+
+            <h2>
+                خلاصه وضعیت
+            </h2>
+        </div>
+
 
         <div class="summary-list">
 
             <div class="summary-item">
                 <span>امتیاز ریسک</span>
 
-                <strong>
+                <strong class="risk-score-value">
                     {% if risk %}
                         {{ risk.score }}
                     {% else %}
@@ -59,8 +84,12 @@
                 <span>مجموع مانده بدهی</span>
 
                 <strong>
-                    {{ total_debt }}
+                    {{ total_debt | human_money }}
                 </strong>
+
+                <small>
+                    تومان
+                </small>
             </div>
 
 
@@ -70,6 +99,10 @@
                 <strong>
                     {{ open_invoice_count }}
                 </strong>
+
+                <small>
+                    فقره
+                </small>
             </div>
 
         </div>
@@ -77,9 +110,22 @@
     </div>
 
 
-    <div class="section">
+    <!-- RISK -->
 
-        <h2>دلایل ریسک</h2>
+    <div class="customer-detail-section">
+
+        <div class="customer-section-title">
+
+            <div class="dashboard-section-kicker">
+                تحلیل ریسک
+            </div>
+
+            <h2>
+                دلایل ریسک
+            </h2>
+
+        </div>
+
 
         {% if risk and risk.reasons %}
 
@@ -98,14 +144,23 @@
     </div>
 
 
-    <div class="section">
+    <!-- INVOICES -->
+
+    <div class="customer-detail-section">
 
         <div class="section-heading">
 
             <div>
-                <h2>فاکتورهای مشتری</h2>
+                <div class="dashboard-section-kicker">
+                    مطالبات
+                </div>
+
+                <h2>
+                    فاکتورهای مشتری
+                </h2>
+
                 <p class="section-description">
-                    وضعیت فاکتورهای ثبت‌شده برای این مشتری
+                    وضعیت فاکتورهای ثبت‌شده و مانده قابل وصول
                 </p>
             </div>
 
@@ -119,14 +174,17 @@
                 <table>
 
                     <thead>
+
                         <tr>
                             <th>شماره فاکتور</th>
-                            <th>مبلغ</th>
+                            <th>مبلغ فاکتور</th>
                             <th>پرداخت شده</th>
                             <th>مانده</th>
                             <th>تاریخ سررسید</th>
                         </tr>
+
                     </thead>
+
 
                     <tbody>
 
@@ -135,25 +193,30 @@
                             <tr>
 
                                 <td>
-                                    {{ invoice.invoice_number }}
-                                </td>
-
-                                <td>
-                                    {{ invoice.amount }}
-                                </td>
-
-                                <td>
-                                    {{ invoice.paid_amount }}
-                                </td>
-
-                                <td>
                                     <strong>
-                                        {{ invoice.remaining_amount }}
+                                        {{ invoice.invoice_number }}
                                     </strong>
                                 </td>
 
                                 <td>
-                                    {{ invoice.due_date }}
+                                    {{ invoice.amount | human_money }}
+                                    <small>تومان</small>
+                                </td>
+
+                                <td>
+                                    {{ invoice.paid_amount | human_money }}
+                                    <small>تومان</small>
+                                </td>
+
+                                <td>
+                                    <strong class="invoice-remaining">
+                                        {{ invoice.remaining_amount | human_money }}
+                                        <small>تومان</small>
+                                    </strong>
+                                </td>
+
+                                <td>
+                                    {{ invoice.due_date | jalali_date }}
                                 </td>
 
                             </tr>

@@ -10,20 +10,64 @@
 
     <div class="auth-card">
 
-        <h1>ورود به سیستم</h1>
+        <div class="auth-heading">
+
+            <div class="auth-kicker">
+                سیستم مدیریت مطالبات
+            </div>
+
+            <h1>
+                ورود به سیستم
+            </h1>
+
+            <p>
+                نام کاربری و رمز عبور خود را وارد کنید.
+            </p>
+
+        </div>
+
 
         {% if form.errors %}
-            <p>نام کاربری یا رمز عبور اشتباه است.</p>
+
+            <div class="login-error">
+                نام کاربری یا رمز عبور اشتباه است.
+                <br>
+                لطفاً دوباره تلاش کنید.
+            </div>
+
         {% endif %}
 
+
         <form method="post">
+
             {% csrf_token %}
 
-            {{ form.as_p }}
+            <div class="auth-field">
+
+                <label for="{{ form.username.id_for_label }}">
+                    نام کاربری
+                </label>
+
+                {{ form.username }}
+
+            </div>
+
+
+            <div class="auth-field">
+
+                <label for="{{ form.password.id_for_label }}">
+                    رمز عبور
+                </label>
+
+                {{ form.password }}
+
+            </div>
+
 
             <button type="submit">
                 ورود
             </button>
+
         </form>
 
     </div>
