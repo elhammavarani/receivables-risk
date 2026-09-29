@@ -11,7 +11,6 @@
 
     <div class="import-container">
 
-        <!-- Page heading -->
         <div class="import-heading">
 
             <div class="import-kicker">
@@ -30,6 +29,7 @@
 
 
         <!-- Upload card -->
+
         <div class="import-card">
 
             <div class="import-card-header">
@@ -68,7 +68,10 @@
 
                 {% csrf_token %}
 
-                <label class="upload-zone" for="file">
+                <label
+                    class="upload-zone"
+                    for="file"
+                >
 
                     <div class="upload-zone-icon">
                         ↑
@@ -105,7 +108,7 @@
                 <div class="upload-footer">
 
                     <div class="upload-hint">
-                        اطلاعات فایل پس از دریافت برای تحلیل مطالبات بررسی می‌شود.
+                        پس از دریافت فایل، ستون‌ها بررسی و برای ورود اطلاعات Mapping می‌شوند.
                     </div>
 
                     <button
@@ -137,7 +140,7 @@
                     </strong>
 
                     <span>
-                        {{ uploaded_file.name }}
+                        {{ uploaded_file }}
                     </span>
 
                 </div>
@@ -176,8 +179,13 @@
 
                     {% csrf_token %}
 
-                    <div class="select-wrapper">
+                    <input
+                        type="hidden"
+                        name="action"
+                        value="select_sheet"
+                    >
 
+                    <div class="select-wrapper">
                         <label for="sheet">
                             Sheet موردنظر
                         </label>
@@ -187,7 +195,7 @@
                             name="sheet"
                         >
 
-                        {% for sheet in sheet_names %}
+                            {% for sheet in sheet_names %}
 
                                 <option
                                     value="{{ sheet }}"
@@ -219,83 +227,210 @@
         {% endif %}
 
 
-        <!-- خلاصه مالی -->
+        {% if mapping_fields %}
+
+            <div class="import-card">
+
+                <div class="import-card-header">
+
+                    <div class="import-icon">
+                        03
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            تطبیق ستون‌های فایل
+                        </h2>
+
+                        <p>
+                            سیستم نام ستون‌ها را تشخیص داده است. در صورت نیاز انتخاب‌ها را اصلاح کنید.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                {% if mapping_error %}
+
+                    <div class="import-alert">
+                        {{ mapping_error }}
+                    </div>
+
+                {% endif %}
+
+
+                <form method="post">
+
+                    {% csrf_token %}
+
+                    <input
+                        type="hidden"
+                        name="action"
+                        value="apply_mapping"
+                    >
+
+
+                    <div class="mapping-list">
+
+                        {% for field in mapping_fields %}
+
+                            <div class="mapping-row">
+
+                                <div class="mapping-label">
+
+                                    <strong>
+                                        {{ field.label }}
+                                    </strong>
+
+                                    <span>
+                                        فیلد موردنیاز سیستم
+                                    </span>
+
+                                </div>
+
+
+                                <div class="mapping-select">
+
+                                    <select
+                                        name="mapping_{{ field.key }}"
+                                        required
+                                    >
+
+                                        <option value="">
+                                            انتخاب ستون فایل
+                                        </option>
+
+                                        {% for column in field.columns %}
+
+                                            <option
+                                                value="{{ column }}"
+                                                {% if column == field.selected %}
+                                                    selected
+                                                {% endif %}
+                                            >
+                                                {{ column }}
+                                            </option>
+
+                                        {% endfor %}
+
+                                    </select>
+
+                                </div>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+
+                    <div class="mapping-hint">
+                        ستون‌های اضافی فایل نیازی به Mapping ندارند و نادیده گرفته می‌شوند.
+                    </div>
+                    <div class="upload-footer">
+
+                        <div class="upload-hint">
+                            پس از تأیید، اطلاعات وارد سیستم شده و تحلیل ریسک انجام می‌شود.
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="upload-submit"
+                        >
+                            تأیید و تحلیل اطلاعات
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        {% endif %}
+
 
         {% if summary %}
 
-    <div class="section">
+            <div class="section">
 
-        <div class="import-card-header">
+                <div class="import-card-header">
 
-            <div class="import-icon">
-                03
+                    <div class="import-icon">
+                        04
+                    </div>
+
+                    <div>
+                        <h2>
+                            خلاصه مالی
+                        </h2>
+
+                        <p>
+                            نمای کلی وضعیت مطالبات، مبالغ معوق و فاکتورهای سررسیده.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="import-summary">
+
+                    <div class="import-summary-item">
+
+                        <span>
+                            کل مطالبات
+                        </span>
+
+                        <strong>
+                            {{ summary.total_receivables|human_money }}
+                        </strong>
+
+                        <small>
+                            تومان
+                        </small>
+
+                    </div>
+
+
+                    <div class="import-summary-item">
+
+                        <span>
+                            مطالبات معوق
+                        </span>
+
+                        <strong>
+                            {{ summary.total_overdue|human_money }}
+                        </strong>
+
+                        <small>
+                            تومان
+                        </small>
+
+                    </div>
+
+
+                    <div class="import-summary-item">
+
+                        <span>
+                            فاکتورهای معوق
+                        </span>
+
+                        <strong>
+                            {{ summary.overdue_invoice_count }}
+                        </strong>
+
+                        <small>
+                            فقره
+                        </small>
+
+                    </div>
+
+                </div>
+
             </div>
 
-            <div>
-                <h2>خلاصه مالی</h2>
-                <p>نمای کلی وضعیت مطالبات، مبالغ معوق و فاکتورهای سررسیده.</p>
-            </div>
-
-        </div>
-
-
-        <div class="import-summary">
-
-            <div class="import-summary-item">
-
-                <span>
-                    کل مطالبات
-                </span>
-
-                <strong>
-                    {{ summary.total_receivables | human_money }}
-                </strong>
-
-                <small>
-                    تومان
-                </small>
-
-            </div>
-
-
-            <div class="import-summary-item">
-
-                <span>
-                    مطالبات معوق
-                </span>
-
-                <strong>
-                    {{ summary.total_overdue | human_money }}
-                </strong>
-
-                <small>
-                    تومان
-                </small>
-
-            </div>
-
-
-            <div class="import-summary-item">
-
-                <span>
-                    فاکتورهای معوق
-                </span>
-
-                <strong>
-                    {{ summary.overdue_invoice_count }}
-                </strong>
-
-                <small>
-                    فقره
-                </small>
-
-            </div>
-
-        </div>
-
-    </div>
-
-{% endif %}
+        {% endif %}
 
 
         {% if columns %}
@@ -305,7 +440,7 @@
                 <div class="import-card-header">
 
                     <div class="import-icon">
-                        04
+                        05
                     </div>
 
                     <div>
@@ -315,7 +450,7 @@
                         </h2>
 
                         <p>
-                            ستون‌های شناسایی‌شده در فایل.
+                            ستون‌های شناسایی‌شده و پردازش‌شده در فایل.
                         </p>
 
                     </div>
@@ -347,7 +482,7 @@
                 <div class="import-card-header">
 
                     <div class="import-icon">
-                        05
+                        06
                     </div>
 
                     <div>
@@ -357,7 +492,7 @@
                         </h2>
 
                         <p>
-                            بررسی اولیه داده‌های فایل.
+                            بررسی اولیه داده‌های واردشده.
                         </p>
 
                     </div>
@@ -379,7 +514,6 @@
 
 
 <script>
-
     const fileInput = document.getElementById("file");
     const fileName = document.getElementById("file-name");
 
