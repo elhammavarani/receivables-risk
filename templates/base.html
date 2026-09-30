@@ -70,29 +70,18 @@
                 </div>
 
                 <div class="topbar-actions">
-
-                    <a
-                        href="{% url 'dashboard_home' %}"
-                        class="logout-button dashboard-link"
-                        style="text-decoration: none;"
-                    >
+                    <a href="{% url 'dashboard_home' %}" class="logout-button dashboard-link" style="text-decoration: none;">
                         داشبورد
                     </a>
 
-                    <form
-                        method="post"
-                        action="{% url 'logout' %}"
-                    >
+                    <a href="{% url 'upload_file' %}" class="logout-button dashboard-link" style="text-decoration: none;">
+                        ورود اطلاعات
+                    </a>
+
+                    <form method="post" action="{% url 'logout' %}">
                         {% csrf_token %}
-
-                        <button
-                            type="submit"
-                            class="logout-button"
-                        >
-                            خروج
-                        </button>
+                        <button type="submit" class="logout-button">خروج</button>
                     </form>
-
                 </div>
 
             </div>
